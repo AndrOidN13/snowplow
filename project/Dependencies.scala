@@ -9,6 +9,7 @@ object Dependencies {
       val slf4j: String = "1.7.36"
       val circe: String = "0.14.2"
       val akkaHttpCirce: String = "1.39.2"
+      val mongoScalaDriver: String = "2.9.0"
     }
     val test = new {
       val scalaTest: String = "3.2.12"
@@ -27,6 +28,7 @@ object Dependencies {
     "io.circe" %% "circe-generic" % versions.compile.circe,
     "io.circe" %% "circe-parser" % versions.compile.circe,
     "de.heikoseeberger" %% "akka-http-circe" % versions.compile.akkaHttpCirce,
+    "org.mongodb.scala" %% "mongo-scala-driver" % versions.compile.mongoScalaDriver,
     "org.scalatest" %% "scalatest" % versions.test.scalaTest % Test
   )
 }
