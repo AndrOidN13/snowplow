@@ -21,10 +21,13 @@ case object InternalServerError extends Error {
 case object BadRequest extends Error {
   val statusCode = StatusCodes.BadRequest
 }
+case object NotFound extends Error {
+  val statusCode = StatusCodes.NotFound
+}
 
 object Status {
   implicit val encodeStatus: Encoder[Status] = Encoder[String].contramap {
-    case Success | Created                  => "success"
-    case InternalServerError | BadRequest   => "error"
+    case Success | Created                             => "success"
+    case InternalServerError | BadRequest | NotFound   => "error"
   }
 }
