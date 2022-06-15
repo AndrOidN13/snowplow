@@ -9,6 +9,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import java.util.concurrent.Executors
 import org.mongodb.scala._
 import org.mongodb.scala.model.Filters._
+import org.mongodb.scala.model.Projections._
 
 @Singleton
 class MongoDaoImpl extends PersistenceDao with AppLogger with Retrying {
@@ -41,6 +42,7 @@ class MongoDaoImpl extends PersistenceDao with AppLogger with Retrying {
     database
       .getCollection(schemasCollectionName)
       .find(equal("_id", schemaId))
+      .projection(fields(include("schema")))
       .first()
       .headOption()
       .map(_.map(_.getString("schema")))

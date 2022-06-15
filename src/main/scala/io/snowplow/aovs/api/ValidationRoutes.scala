@@ -4,6 +4,7 @@ import akka.http.scaladsl.model.StatusCodes.{InternalServerError => AkkaInternal
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
+import io.circe.Json
 import io.snowplow.aovs.model.{FailureResponse, InternalServerError, ValidateDocument}
 import io.snowplow.aovs.services.validation.ValidationService
 import io.snowplow.aovs.utils.AppLogger
@@ -16,7 +17,7 @@ class ValidationRoutes @Inject()(validationService: ValidationService) extends A
   import io.circe.generic.auto._
   def routes: Route = path("validate" / Segment) { schemaId =>
     post {
-    entity(as[String])(json => {
+    entity(as[Json])(json => {
       onComplete(validationService.validate(schemaId, json)) {
         case Success(either) => either.fold(
           failure => complete(failure.status.statusCode, failure),

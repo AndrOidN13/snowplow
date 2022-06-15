@@ -6,8 +6,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.networknt.schema.JsonSchemaFactory
-import com.networknt.schema.SpecVersionDetector
+import io.circe.Json
 import io.snowplow.aovs.utils.{AppLogger, SchemaUtils}
 
 import scala.util.Try
@@ -16,7 +15,7 @@ import scala.util.Try
 class SchemaServiceImpl @Inject()(persistenceDao: PersistenceDao) extends SchemaService with AppLogger {
   private val mapper = new ObjectMapper
 
-  override def saveSchema(schemaId: String, schema: String): Future[Either[FailureResponse, SuccessResponse]] = {
+  override def saveSchema(schemaId: String, schema: Json): Future[Either[FailureResponse, SuccessResponse]] = {
     validateSchema(schemaId, schema)
       .map(s =>
         persistenceDao
@@ -29,8 +28,8 @@ class SchemaServiceImpl @Inject()(persistenceDao: PersistenceDao) extends Schema
     )
   }
 
-  private[schema] def validateSchema(schemaId: String, schema: String): Either[FailureResponse, String] = {
-    Try(SchemaUtils.getSchemaFromString(schema, mapper).toString)
+  private[schema] def validateSchema(schemaId: String, schema: Json): Either[FailureResponse, String] = {
+    Try(SchemaUtils.getSchemaFromJson(schema, mapper).getSchemaNode.toString)
       .fold(
       exc => {
         logger.error(s"Schema validation failed for schemaId $schemaId and schema $schema", exc)
