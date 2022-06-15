@@ -16,6 +16,12 @@ import scala.jdk.CollectionConverters.SetHasAsScala
 class ValidationServiceImpl @Inject()(schemaService: SchemaService) extends ValidationService with AppLogger {
   private val mapper = new ObjectMapper
 
+  /**
+   * Validates given JSON against a schema with given ID
+   * @param schemaId ID of the schema
+   * @param json JSON to validate
+   * @return either a [[SuccessResponse]] or a [[FailureResponse]]
+   */
   override def validate(schemaId: String, json: Json): Future[Either[FailureResponse, SuccessResponse]] = {
     schemaService
       .getSchema(schemaId)

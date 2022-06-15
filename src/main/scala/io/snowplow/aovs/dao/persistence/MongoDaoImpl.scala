@@ -20,6 +20,7 @@ class MongoDaoImpl extends PersistenceDao with AppLogger with Retrying {
   private val database: MongoDatabase = mongoClient.getDatabase(config.getString("mongo.database"))
   private val schemasCollectionName = "schemas"
 
+  //MongoDB driver documentation says that the API is asynchronous, but added a separate thread pool for IO just in case
   implicit private val ioExecutionContext = ExecutionContext.fromExecutor(
     Executors.newFixedThreadPool(config.getInt("mongo.threadPoolSize"))
   )

@@ -15,6 +15,12 @@ import scala.util.Try
 class SchemaServiceImpl @Inject()(persistenceDao: PersistenceDao) extends SchemaService with AppLogger {
   private val mapper = new ObjectMapper
 
+  /**
+   * Saves schema to database
+   * @param schemaId id of a schema
+   * @param schema JSON representation of a schema
+   * @return either a [[SuccessResponse]] or a [[FailureResponse]]
+   */
   override def saveSchema(schemaId: String, schema: Json): Future[Either[FailureResponse, SuccessResponse]] = {
     validateSchema(schemaId, schema)
       .map(s =>
@@ -28,6 +34,12 @@ class SchemaServiceImpl @Inject()(persistenceDao: PersistenceDao) extends Schema
     )
   }
 
+  /**
+   * Checks if a string is a valid JSON schema
+   * @param schemaId id of the schema
+   * @param schema JSON representation of a schema
+   * @return either a validated schema string or a [[FailureResponse]]
+   */
   private[schema] def validateSchema(schemaId: String, schema: Json): Either[FailureResponse, String] = {
     Try(SchemaUtils.getSchemaFromJson(schema, mapper).getSchemaNode.toString)
       .fold(
@@ -39,6 +51,11 @@ class SchemaServiceImpl @Inject()(persistenceDao: PersistenceDao) extends Schema
     )
   }
 
+  /**
+   * Gets schema from database
+   * @param schemaId id of the schema to retrieve
+   * @return either JSON string of a schema or a [[FailureResponse]]
+   */
   override def getSchema(schemaId: String): Future[Either[FailureResponse, String]] = {
     persistenceDao
       .getSchema(schemaId)
