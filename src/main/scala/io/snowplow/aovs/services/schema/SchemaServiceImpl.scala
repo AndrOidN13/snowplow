@@ -8,7 +8,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.networknt.schema.JsonSchemaFactory
 import com.networknt.schema.SpecVersionDetector
-import io.snowplow.aovs.utils.AppLogger
+import io.snowplow.aovs.utils.{AppLogger, SchemaUtils}
 
 import scala.util.Try
 
@@ -30,13 +30,8 @@ class SchemaServiceImpl @Inject()(persistenceDao: PersistenceDao) extends Schema
   }
 
   private[schema] def validateSchema(schemaId: String, schema: String): Either[FailureResponse, String] = {
-    Try {
-      val jsonNode = mapper.readTree(schema)
-      JsonSchemaFactory
-        .getInstance(SpecVersionDetector.detect(jsonNode))
-        .getSchema(jsonNode)
-        .toString
-    }.fold(
+    Try(SchemaUtils.getSchemaFromString(schema, mapper).toString)
+      .fold(
       exc => {
         logger.error(s"Schema validation failed for schemaId $schemaId and schema $schema", exc)
         Left(FailureResponse(UploadSchema, schemaId, BadRequest, s"Schema validation failed: ${exc.getMessage}"))
