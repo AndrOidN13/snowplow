@@ -10,6 +10,7 @@ object Dependencies {
       val circe: String = "0.14.2"
       val akkaHttpCirce: String = "1.39.2"
       val mongoScalaDriver: String = "2.9.0"
+      val jsonSchemaValidator: String = "1.0.70"
     }
     val test = new {
       val scalaTest: String = "3.2.12"
@@ -29,6 +30,7 @@ object Dependencies {
     "io.circe" %% "circe-parser" % versions.compile.circe,
     "de.heikoseeberger" %% "akka-http-circe" % versions.compile.akkaHttpCirce,
     "org.mongodb.scala" %% "mongo-scala-driver" % versions.compile.mongoScalaDriver,
+    "com.networknt" % "json-schema-validator" % versions.compile.jsonSchemaValidator,
     "org.scalatest" %% "scalatest" % versions.test.scalaTest % Test
   )
 }
